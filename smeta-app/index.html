@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Смета — офлайн‑приложение</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="app-header">
+        <h1>Смета</h1>
+        <div class="header-actions">
+            <button id="btn-new" class="btn">Новая</button>
+            <button id="btn-save" class="btn btn-primary">Сохранить</button>
+            <button id="btn-export" class="btn">Экспорт JSON</button>
+            <label class="btn btn-file">
+                Импорт JSON
+                <input type="file" id="file-import" accept="application/json">
+            </label>
+            <button id="btn-print" class="btn">Печать / PDF</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card grid-2">
+            <div>
+                <h2>Данные компании</h2>
+                <div class="form-grid">
+                    <label>Организация<input id="company-name" placeholder="ООО Компания"></label>
+                    <label>ИНН / КПП<input id="company-tax" placeholder="ИНН / КПП"></label>
+                    <label>Адрес<textarea id="company-address" rows="2" placeholder="Юридический адрес"></textarea></label>
+                    <label>Телефон<input id="company-phone" placeholder="+7 (___) ___‑__‑__"></label>
+                    <label>E‑mail<input id="company-email" placeholder="info@example.com"></label>
+                </div>
+            </div>
+            <div>
+                <h2>Клиент</h2>
+                <div class="form-grid">
+                    <label>Название / ФИО<input id="client-name" placeholder="Заказчик"></label>
+                    <label>Контакты<input id="client-contact" placeholder="Телефон, e‑mail"></label>
+                    <label>Адрес<textarea id="client-address" rows="2" placeholder="Адрес клиента"></textarea></label>
+                </div>
+            </div>
+        </section>
+
+        <section class="card grid-2">
+            <div>
+                <h2>Смета</h2>
+                <div class="form-grid">
+                    <label>Номер сметы<input id="estimate-number" placeholder="SM‑2025‑001"></label>
+                    <label>Дата<input id="estimate-date" type="date"></label>
+                    <label>Проект<input id="project-name" placeholder="Название проекта"></label>
+                    <label>Адрес работ<input id="project-address" placeholder="Адрес объекта"></label>
+                    <label>Валюта<select id="currency-select">
+                        <option value="RUB" selected>RUB ₽</option>
+                        <option value="USD">USD $</option>
+                        <option value="EUR">EUR €</option>
+                        <option value="KZT">KZT ₸</option>
+                        <option value="UAH">UAH ₴</option>
+                    </select></label>
+                    <label>Ставка НДС, %<input id="vat-rate" type="number" step="0.01" min="0" value="20"></label>
+                    <label>НДС включён в цены?<select id="vat-included">
+                        <option value="yes">Да</option>
+                        <option value="no" selected>Нет</option>
+                    </select></label>
+                    <label>Срок действия (дней)<input id="valid-days" type="number" min="0" value="30"></label>
+                </div>
+            </div>
+            <div>
+                <h2>Доп. поля</h2>
+                <div id="custom-fields" class="custom-fields"></div>
+                <div class="custom-field-add">
+                    <input id="custom-key" placeholder="Название поля">
+                    <input id="custom-value" placeholder="Значение">
+                    <button id="btn-add-custom" class="btn">Добавить</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="items-header">
+                <h2>Позиции сметы</h2>
+                <div class="items-actions">
+                    <button id="btn-add-item" class="btn btn-primary">Добавить позицию</button>
+                    <button id="btn-clear-items" class="btn">Очистить</button>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table id="items-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Наименование</th>
+                            <th>Описание</th>
+                            <th>Ед.</th>
+                            <th>Кол-во</th>
+                            <th>Цена</th>
+                            <th>Скидка %</th>
+                            <th>Скидка ₽</th>
+                            <th>НДС %</th>
+                            <th>Сумма</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="items-body"></tbody>
+                </table>
+            </div>
+            <div class="summary">
+                <div class="summary-left">
+                    <label>Примечания<textarea id="notes" rows="3" placeholder="Условия, сроки, важные детали"></textarea></label>
+                    <label>Условия оплаты<textarea id="terms" rows="3" placeholder="Предоплата, график платежей и т.д."></textarea></label>
+                </div>
+                <div class="summary-right">
+                    <div class="sum-row"><span>Подытог:</span><span id="sum-subtotal">0</span></div>
+                    <div class="sum-row"><span>Скидка всего:</span><span id="sum-discount">0</span></div>
+                    <div class="sum-row"><span>НДС всего:</span><span id="sum-vat">0</span></div>
+                    <div class="sum-row grand"><span>Итого к оплате:</span><span id="sum-total">0</span></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <span>Локальная версия. Данные сохраняются в вашем браузере.</span>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Установка сегодняшней даты по умолчанию
+        (function() {
+            const dateInput = document.getElementById('estimate-date');
+            if (dateInput && !dateInput.value) {
+                const today = new Date().toISOString().slice(0, 10);
+                dateInput.value = today;
+            }
+        })();
+    </script>
+</body>
+</html>
+
